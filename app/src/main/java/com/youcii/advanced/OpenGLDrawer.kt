@@ -66,7 +66,7 @@ class OpenGLDrawer {
         buildShaderAndLinkProgram()
     }
 
-    fun onDrawFrame(mOESTextureId: Int, transformMatrix: FloatArray) {
+    fun onDrawFrame(mTextureId: Int, transformMatrix: FloatArray) {
         //获取Shader中定义的变量在program中的位置
         val aPositionLocation = GLES20.glGetAttribLocation(mShaderProgram, "aPosition")
         val aTextureCoordinateLocation = GLES20.glGetAttribLocation(mShaderProgram, "aTextureCoordinate")
@@ -76,10 +76,9 @@ class OpenGLDrawer {
         //激活纹理单元0
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         //绑定外部纹理到纹理单元0
-        GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, mOESTextureId)
+        GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, mTextureId)
         //将此纹理单元床位片段着色器的uTextureSampler外部纹理采样器
         GLES20.glUniform1i(uTextureSamplerLocation, 0)
-
         //将纹理矩阵传给片段着色器
         GLES20.glUniformMatrix4fv(uTextureMatrixLocation, 1, false, transformMatrix, 0)
 
@@ -90,27 +89,13 @@ class OpenGLDrawer {
             //使能顶点属性
             GLES20.glEnableVertexAttribArray(aPositionLocation)
             //顶点坐标每次读取两个顶点值，之后间隔16（每行4个值 * 4个字节）的字节继续读取两个顶点值
-            GLES20.glVertexAttribPointer(
-                aPositionLocation,
-                2,
-                GLES20.GL_FLOAT,
-                false,
-                16,
-                mDataBuffer
-            )
+            GLES20.glVertexAttribPointer(aPositionLocation, 2, GLES20.GL_FLOAT, false, 16, mDataBuffer)
 
             //纹理坐标从位置2开始读取
             mDataBuffer.position(2)
             GLES20.glEnableVertexAttribArray(aTextureCoordinateLocation)
             //纹理坐标每次读取两个顶点值，之后间隔16（每行4个值 * 4个字节）的字节继续读取两个顶点值
-            GLES20.glVertexAttribPointer(
-                aTextureCoordinateLocation,
-                2,
-                GLES20.GL_FLOAT,
-                false,
-                16,
-                mDataBuffer
-            )
+            GLES20.glVertexAttribPointer(aTextureCoordinateLocation, 2, GLES20.GL_FLOAT, false, 16, mDataBuffer)
         }
 
         //绘制两个三角形（6个顶点）
