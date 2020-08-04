@@ -46,7 +46,7 @@ public class MyService extends Service {
         // mParams.alpha = 0.8f;//窗口的透明度
 
 
-        TextView textView = new TextView(this);
+        TextView textView = new TextView(MyApplication.context);
         textView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         textView.setGravity(Gravity.CENTER);
         textView.setText("阿诗丹顿多多多多多多多多多多多阿诗丹顿多多多多多多多多多多多阿诗丹顿多多多多多多多多多多多阿诗丹顿多多多多多多多多多多多阿诗丹顿多多多多多多多多多多多");
