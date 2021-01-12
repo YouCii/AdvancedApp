@@ -3,6 +3,7 @@ package com.youcii.advanced
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.os.Build
 import android.os.Bundle
 import android.os.Debug
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -29,9 +31,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         appendMessage("最大可用内存: " + Runtime.getRuntime().maxMemory())
         appendMessage("当前可用内存: " + Runtime.getRuntime().freeMemory())
 
-        val memoryInfo = Debug.MemoryInfo()
-        Debug.getMemoryInfo(memoryInfo)
-        appendMessage(memoryInfo.toString())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val memoryInfo = Debug.MemoryInfo()
+            Debug.getMemoryInfo(memoryInfo)
+            appendMessage("memoryInfo(kb): " + JSONObject(memoryInfo.memoryStats as Map<*, *>).toString() + "\n")
+        }
     }
 
     override fun onClick(view: View?) {
@@ -61,7 +65,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             btnGc -> {
                 val lastMemory = Runtime.getRuntime().freeMemory()
                 System.gc()
-                // 方便起见, 直接卡死主线程
                 btnGc.postDelayed({
                     val increase = lastMemory - Runtime.getRuntime().freeMemory()
                     appendMessage(btnGc.text.toString() + "后释放内存: " + increase)
