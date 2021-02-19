@@ -1,6 +1,7 @@
 package com.youcii.methodrecord
 
 import com.google.auto.service.AutoService
+import com.squareup.javapoet.*
 import com.sun.tools.javac.code.Symbol
 import java.io.IOException
 import java.io.Writer
@@ -9,6 +10,7 @@ import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
+import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
 import kotlin.collections.LinkedHashSet
 
@@ -28,7 +30,7 @@ class RouterProcessor : AbstractProcessor() {
         roundEnvironment ?: return false
 
         if (roundEnvironment.processingOver()) {
-            generateFile()
+            generateFileWithJavaPoet()
         } else {
             for (typeElement in typeElementSet) {
                 val elements = roundEnvironment.getElementsAnnotatedWith(typeElement) ?: continue
@@ -59,6 +61,31 @@ class RouterProcessor : AbstractProcessor() {
                         "\n" +
                         "}"
             )
+            writer.flush()
+            writer.close()
+        } catch (ignore: IOException) {
+            print("写入失败$ignore")
+        }
+    }
+
+    private fun generateFileWithJavaPoet() {
+        val listField = FieldSpec.builder(String::class.java, ROUTER_FIELD_NAME)
+            .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+            .addJavadoc("存储Router列表,并用|分割\n")
+            .initializer("\"$generateContent\"")
+            .build()
+        val resultClass = TypeSpec.classBuilder("RouteList")
+            .addModifiers(Modifier.PUBLIC)
+            .addJavadoc("Created by APT on ${Date()}.\n")
+            .addField(listField)
+            .build()
+        val javaFile = JavaFile.builder("com.youcii.advanced", resultClass)
+            .build()
+
+        try {
+            val source = processingEnv.filer.createSourceFile(ROUTER_CLASS_NAME)
+            val writer: Writer = source.openWriter()
+            javaFile.writeTo(writer)
             writer.flush()
             writer.close()
         } catch (ignore: IOException) {
