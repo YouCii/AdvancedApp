@@ -1,6 +1,6 @@
 package com.youcii.buildsrc.transform
 
-import com.youcii.buildsrc.base.BaseNonIncrementTransform
+import com.youcii.buildsrc.base.BaseTransform
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.MethodVisitor
@@ -9,8 +9,7 @@ import org.objectweb.asm.Opcodes
 /**
  * Created by jingdongwei on 2021/03/02.
  */
-class TestNonIncrementTransform : BaseNonIncrementTransform() {
-
+class TestTransform : BaseTransform() {
     override fun getClassVisitor(classWriter: ClassWriter): ClassVisitor {
         return object : ClassVisitor(Opcodes.ASM5, classWriter) {
             private var className: String? = ""

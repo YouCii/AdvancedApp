@@ -1,10 +1,8 @@
 package com.youcii.buildsrc
 
 import com.android.build.gradle.AppExtension
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
-import com.youcii.buildsrc.base.BaseNonIncrementTransform
-import com.youcii.buildsrc.transform.TestNonIncrementTransform
+import com.youcii.buildsrc.transform.TestTransform
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -17,7 +15,7 @@ class TransformPlugin : Plugin<Project> {
         target.subprojects { subProject ->
             subProject.afterEvaluate {
                 val baseExtension = it.extensions.findByType(AppExtension::class.java) ?: it.extensions.findByType(LibraryExtension::class.java)
-                baseExtension?.registerTransform(TestNonIncrementTransform())
+                baseExtension?.registerTransform(TestTransform())
             }
         }
 

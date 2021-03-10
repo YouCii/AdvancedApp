@@ -4,9 +4,15 @@ import org.objectweb.asm.*
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.ide.common.internal.WaitableExecutor
+import com.youcii.buildsrc.IOUtils
 import org.apache.commons.io.FileUtils
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.IOException
+import java.util.jar.JarFile
+import java.util.jar.JarOutputStream
+import java.util.zip.ZipEntry
 
 /**
  * Created by jingdongwei on 2021/02/20.
@@ -73,6 +79,14 @@ abstract class BaseTransform : Transform() {
     }
 
     /**
+     * 支持增量编译处理, 需要判断Input.status
+     * 参考: https://juejin.cn/post/6844904150925312008
+     */
+    override fun isIncremental(): Boolean {
+        return true
+    }
+
+    /**
      * 1. 如果消费了getInputs()的输入，则transform后必须再输出给下一级
      * 2. 如果不希望做任何修改, 应该使用getReferencedScopes指定读取的对象, 并在getScopes中返回空。
      * 3. 是否增量编译要以transformInvocation.isIncremental()为准, 如果isIncremental==false则Input#getStatus()极可能不准确
@@ -90,17 +104,25 @@ abstract class BaseTransform : Transform() {
             // 多线程处理Jar
             input.jarInputs.forEach { jarInput ->
                 waitableExecutor.execute {
-                    handleJarInput(jarInput)
                     val dest = outputProvider.getContentLocation(jarInput.file.absolutePath, jarInput.contentTypes, jarInput.scopes, Format.JAR)
-                    FileUtils.copyFile(jarInput.file, dest)
+                    if (transformInvocation.isIncremental) {
+                        handleIncrementalJarInput(jarInput, dest)
+                    } else {
+                        handleNonIncrementalJarInput(jarInput)
+                        FileUtils.copyFile(jarInput.file, dest)
+                    }
                 }
             }
             // 多线程处理源码
             input.directoryInputs.forEach { directoryInput ->
                 waitableExecutor.execute {
-                    handleDirectoryInput(directoryInput.file)
                     val dest = outputProvider.getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)
-                    FileUtils.copyDirectory(directoryInput.file, dest)
+                    if (transformInvocation.isIncremental) {
+                        handleIncrementalDirectoryInput(directoryInput, dest)
+                    } else {
+                        handleNonIncrementalDirectoryInput(directoryInput.file)
+                        FileUtils.copyDirectory(directoryInput.file, dest)
+                    }
                 }
             }
             // 以上写法仅适用于各Task互不依赖的场景
@@ -109,10 +131,137 @@ abstract class BaseTransform : Transform() {
         waitableExecutor.waitForTasksWithQuickFail<Any>(true)
     }
 
-    abstract fun handleJarInput(jarInput: JarInput)
-    abstract fun handleDirectoryInput(inputFile: File)
+    /**
+     * 增量处理JarInput
+     */
+    private fun handleIncrementalJarInput(jarInput: JarInput, dest: File) {
+        when (jarInput.status) {
+            Status.NOTCHANGED -> {
+            }
+            Status.ADDED -> {
+                handleNonIncrementalJarInput(jarInput)
+            }
+            Status.CHANGED -> {
+                // 如果状态是改变, 说明有历史缓存, 应该先删掉, 再写入我们本次生成的
+                if (dest.exists()) {
+                    FileUtils.forceDelete(dest)
+                }
+                handleNonIncrementalJarInput(jarInput)
+            }
+            Status.REMOVED -> {
+                if (dest.exists()) {
+                    FileUtils.forceDelete(dest)
+                }
+            }
+            else -> {
+            }
+        }
+    }
 
-    fun handleFileBytes(oldBytes: ByteArray): ByteArray {
+    /**
+     * 非增量处理JarInput
+     * 两种方式
+     * 1. 解压缩, 修改完后再重新压缩
+     * 2. 直接通过JarFile进行遍历, 先写入一个新文件中, 再替换原jar
+     */
+    private fun handleNonIncrementalJarInput(jarInput: JarInput) {
+        val oldPath = jarInput.file.absolutePath
+        val oldJarFile = JarFile(jarInput.file)
+
+        val newPath = oldPath.substring(0, oldPath.lastIndexOf(".")) + ".bak"
+        val newFile = File(newPath)
+        val newJarOutputStream = JarOutputStream(FileOutputStream(newFile))
+
+        oldJarFile.entries().iterator().forEach {
+            newJarOutputStream.putNextEntry(ZipEntry(it.name))
+            val inputStream = oldJarFile.getInputStream(it)
+            // 修改逻辑
+            if (it.name.startsWith("com")) {
+                val oldBytes = IOUtils.readBytes(inputStream)
+                newJarOutputStream.write(handleFileBytes(oldBytes))
+            }
+            // 不做改动, 原版复制
+            else {
+                IOUtils.copy(inputStream, newJarOutputStream)
+            }
+            newJarOutputStream.closeEntry()
+            inputStream.close()
+        }
+
+        newJarOutputStream.close()
+        oldJarFile.close()
+
+        jarInput.file.delete()
+        newFile.renameTo(jarInput.file)
+    }
+
+    /**
+     * 增量处理类修改
+     */
+    private fun handleIncrementalDirectoryInput(directoryInput: DirectoryInput, dest: File) {
+        val srcDirPath = directoryInput.file.absolutePath
+        val destDirPath = dest.absolutePath
+        directoryInput.changedFiles.forEach { (inputFile, status) ->
+            val destFilePath = inputFile.absolutePath.replace(srcDirPath, destDirPath)
+            val destFile = File(destFilePath)
+            when (status) {
+                Status.NOTCHANGED -> {
+                }
+                Status.ADDED -> {
+                    handleNonIncrementalDirectoryInput(inputFile)
+                    FileUtils.copyFile(inputFile, destFile)
+                }
+                Status.CHANGED -> {
+                    // 如果状态是改变, 说明有历史缓存, 应该先删掉, 再写入我们本次生成的
+                    if (dest.exists()) {
+                        FileUtils.forceDelete(dest)
+                    }
+                    handleNonIncrementalDirectoryInput(inputFile)
+                    FileUtils.copyFile(inputFile, destFile)
+                }
+                Status.REMOVED -> {
+                    if (destFile.exists()) {
+                        FileUtils.forceDelete(destFile)
+                    }
+                }
+                else -> {
+                }
+            }
+        }
+    }
+
+    /**
+     * 非增量处理类修改, 可以把 new bytes 直接写回原文件
+     * 注意: 必须递归到file, 不能处理路径
+     */
+    private fun handleNonIncrementalDirectoryInput(inputFile: File) {
+        if (inputFile.isDirectory) {
+            inputFile.listFiles()?.forEach {
+                handleNonIncrementalDirectoryInput(it)
+            }
+        } else {
+            handleSingleFile(inputFile)
+        }
+    }
+
+    /**
+     * 处理单个路径下的单个文件
+     */
+    private fun handleSingleFile(inputFile: File) {
+        if (inputFile.absolutePath.contains("com/youcii")) {
+            val inputStream = FileInputStream(inputFile)
+            val oldBytes = IOUtils.readBytes(inputStream)
+            inputStream.close()
+
+            val newBytes = handleFileBytes(oldBytes)
+            // 注意!! 实例化FileOutputStream时会清除掉原文件内容!!!!
+            val outputStream = FileOutputStream(inputFile)
+            outputStream.write(newBytes)
+            outputStream.close()
+        }
+    }
+
+    private fun handleFileBytes(oldBytes: ByteArray): ByteArray {
         return try {
             val classReader = ClassReader(oldBytes)
             val classWriter = ClassWriter(ClassWriter.COMPUTE_MAXS)
