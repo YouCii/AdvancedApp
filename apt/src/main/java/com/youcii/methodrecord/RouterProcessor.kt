@@ -47,16 +47,16 @@ class RouterProcessor : AbstractProcessor() {
             val source = processingEnv.filer.createSourceFile(ROUTER_CLASS_NAME)
             val writer: Writer = source.openWriter()
             writer.write(
-                "package com.youcii.advanced;\n" +
-                        "\n" +
-                        "/**\n" +
-                        " * Created by APT on ${Date()}.\n" +
-                        " */\n" +
-                        "public class RouteList {\n" +
-                        "\n" +
-                        "    public static final String $ROUTER_FIELD_NAME = \"$generateContent\";\n" +
-                        "\n" +
-                        "}"
+                """
+                package com.youcii.advanced;
+                
+                /**
+                 * Created by APT on ${Date()}.
+                 */
+                public class RouteList {
+                    public static final String $ROUTER_FIELD_NAME = \"$generateContent\";
+                }
+                """
             )
             writer.flush()
             writer.close()
