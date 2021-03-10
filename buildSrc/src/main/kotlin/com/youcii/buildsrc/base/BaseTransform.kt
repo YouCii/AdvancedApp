@@ -108,8 +108,7 @@ abstract class BaseTransform : Transform() {
                     if (transformInvocation.isIncremental) {
                         handleIncrementalJarInput(jarInput, dest)
                     } else {
-                        handleNonIncrementalJarInput(jarInput)
-                        FileUtils.copyFile(jarInput.file, dest)
+                        handleNonIncrementalJarInput(jarInput, dest)
                     }
                 }
             }
@@ -139,19 +138,19 @@ abstract class BaseTransform : Transform() {
             Status.NOTCHANGED -> {
             }
             Status.ADDED -> {
-                handleNonIncrementalJarInput(jarInput)
+                handleNonIncrementalJarInput(jarInput, dest)
+            }
+            Status.REMOVED -> {
+                if (dest.exists()) {
+                    FileUtils.forceDelete(dest)
+                }
             }
             Status.CHANGED -> {
                 // 如果状态是改变, 说明有历史缓存, 应该先删掉, 再写入我们本次生成的
                 if (dest.exists()) {
                     FileUtils.forceDelete(dest)
                 }
-                handleNonIncrementalJarInput(jarInput)
-            }
-            Status.REMOVED -> {
-                if (dest.exists()) {
-                    FileUtils.forceDelete(dest)
-                }
+                handleNonIncrementalJarInput(jarInput, dest)
             }
             else -> {
             }
@@ -164,7 +163,7 @@ abstract class BaseTransform : Transform() {
      * 1. 解压缩, 修改完后再重新压缩
      * 2. 直接通过JarFile进行遍历, 先写入一个新文件中, 再替换原jar
      */
-    private fun handleNonIncrementalJarInput(jarInput: JarInput) {
+    private fun handleNonIncrementalJarInput(jarInput: JarInput, dest: File) {
         val oldPath = jarInput.file.absolutePath
         val oldJarFile = JarFile(jarInput.file)
 
@@ -193,6 +192,8 @@ abstract class BaseTransform : Transform() {
 
         jarInput.file.delete()
         newFile.renameTo(jarInput.file)
+
+        FileUtils.copyFile(jarInput.file, dest)
     }
 
     /**
@@ -211,6 +212,11 @@ abstract class BaseTransform : Transform() {
                     handleNonIncrementalDirectoryInput(inputFile)
                     FileUtils.copyFile(inputFile, destFile)
                 }
+                Status.REMOVED -> {
+                    if (destFile.exists()) {
+                        FileUtils.forceDelete(destFile)
+                    }
+                }
                 Status.CHANGED -> {
                     // 如果状态是改变, 说明有历史缓存, 应该先删掉, 再写入我们本次生成的
                     if (dest.exists()) {
@@ -218,11 +224,6 @@ abstract class BaseTransform : Transform() {
                     }
                     handleNonIncrementalDirectoryInput(inputFile)
                     FileUtils.copyFile(inputFile, destFile)
-                }
-                Status.REMOVED -> {
-                    if (destFile.exists()) {
-                        FileUtils.forceDelete(destFile)
-                    }
                 }
                 else -> {
                 }
