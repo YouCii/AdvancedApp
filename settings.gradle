@@ -1,2 +1,2 @@
-include ':app', ':apt'
+include ':app', ':apt', ':buildSrc'
 rootProject.name = "AdvancedApp"

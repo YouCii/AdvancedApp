@@ -2,7 +2,6 @@ package com.youcii.methodrecord
 
 import com.google.auto.service.AutoService
 import com.squareup.javapoet.*
-import com.sun.tools.javac.code.Symbol
 import java.io.IOException
 import java.io.Writer
 import java.util.*
@@ -36,9 +35,7 @@ class RouterProcessor : AbstractProcessor() {
                 val elements = roundEnvironment.getElementsAnnotatedWith(typeElement) ?: continue
                 for (element in elements) {
                     // 使用Symbol.ClassSymbol必须引入/Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home/lib/tools.jar
-                    if (element is Symbol.ClassSymbol) {
-                        generateContent += element.fullname.toString() + "|"
-                    }
+                    generateContent += "$element|"
                 }
             }
         }
@@ -64,7 +61,7 @@ class RouterProcessor : AbstractProcessor() {
             writer.flush()
             writer.close()
         } catch (ignore: IOException) {
-            print("写入失败$ignore")
+            println("generateFile写入失败:$ignore")
         }
     }
 
@@ -89,7 +86,7 @@ class RouterProcessor : AbstractProcessor() {
             writer.flush()
             writer.close()
         } catch (ignore: IOException) {
-            print("写入失败$ignore")
+            println("generateFileWithJavaPoet写入失败:$ignore")
         }
     }
 
