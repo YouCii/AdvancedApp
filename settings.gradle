@@ -1,2 +1,4 @@
+include ':LoadProvider'
+include ':ServiceLib'
 include ':app'
 rootProject.name = "AdvancedApp"
