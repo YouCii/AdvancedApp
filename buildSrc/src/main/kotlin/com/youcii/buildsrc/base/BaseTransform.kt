@@ -1,6 +1,5 @@
 package com.youcii.buildsrc.base
 
-import org.objectweb.asm.*
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.ide.common.internal.WaitableExecutor
@@ -103,6 +102,7 @@ abstract class BaseTransform : Transform() {
         transformInvocation.inputs.forEach { input ->
             // 多线程处理Jar
             input.jarInputs.forEach { jarInput ->
+                forEachJarInput(jarInput)
                 waitableExecutor.execute {
                     val dest = outputProvider.getContentLocation(jarInput.file.absolutePath, jarInput.contentTypes, jarInput.scopes, Format.JAR)
                     if (transformInvocation.isIncremental) {
@@ -114,6 +114,7 @@ abstract class BaseTransform : Transform() {
             }
             // 多线程处理源码
             input.directoryInputs.forEach { directoryInput ->
+                forEachDirectoryInput(directoryInput)
                 waitableExecutor.execute {
                     val dest = outputProvider.getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)
                     if (transformInvocation.isIncremental) {
@@ -174,10 +175,10 @@ abstract class BaseTransform : Transform() {
         oldJarFile.entries().iterator().forEach {
             newJarOutputStream.putNextEntry(ZipEntry(it.name))
             val inputStream = oldJarFile.getInputStream(it)
-            // 修改逻辑
-            if (it.name.startsWith("com")) {
+            // 修改逻辑 com.youcii.advanced.classname
+            if (Regex("com.youcii").matches(it.name)) {
                 val oldBytes = IOUtils.readBytes(inputStream)
-                newJarOutputStream.write(handleFileBytes(oldBytes))
+                newJarOutputStream.write(handleFileBytes(oldBytes, it.name))
             }
             // 不做改动, 原版复制
             else {
@@ -249,12 +250,12 @@ abstract class BaseTransform : Transform() {
      * 处理单个路径下的单个文件
      */
     private fun handleSingleFile(inputFile: File) {
-        if (inputFile.absolutePath.contains("com/youcii")) {
+        if (inputFile.absolutePath.contains(Regex("com.youcii"))) {
             val inputStream = FileInputStream(inputFile)
             val oldBytes = IOUtils.readBytes(inputStream)
             inputStream.close()
 
-            val newBytes = handleFileBytes(oldBytes)
+            val newBytes = handleFileBytes(oldBytes, getPackageNameFromPath(inputFile.canonicalPath))
             // 注意!! 实例化FileOutputStream时会清除掉原文件内容!!!!
             val outputStream = FileOutputStream(inputFile)
             outputStream.write(newBytes)
@@ -262,19 +263,27 @@ abstract class BaseTransform : Transform() {
         }
     }
 
-    private fun handleFileBytes(oldBytes: ByteArray): ByteArray {
-        return try {
-            val classReader = ClassReader(oldBytes)
-            val classWriter = ClassWriter(ClassWriter.COMPUTE_MAXS)
-            val classVisitor = getClassVisitor(classWriter)
-            classReader.accept(classVisitor, Opcodes.ASM5)
-            classWriter.toByteArray()
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            oldBytes
-        } catch (e: IllegalArgumentException) {
-            oldBytes
+    /**
+     * 例: /xxxx/xxx/xxx/com/youcii/advanced/xxxx.class
+     */
+    private fun getPackageNameFromPath(path: String): String {
+        // 处理成: youcii/advanced/xxxx.class
+        val packagePath = path.substringAfterLast(File.separator + "com" + File.separator)
+        // 处理成: [youcii, advanced, xxxx.class]
+        val packageArray = packagePath.split(File.separator)
+        var packageName = "com."
+        for (t in packageArray) {
+            packageName += "$t."
         }
+        // 当前为 com.youcii.advanced.R.class.
+        // 需要去除.class.
+        return packageName.substringBefore(".class.")
     }
 
-    abstract fun getClassVisitor(classWriter: ClassWriter): ClassVisitor
+    open fun forEachJarInput(jarInput: JarInput) {}
+
+    open fun forEachDirectoryInput(directoryInput: DirectoryInput) {}
+
+    abstract fun handleFileBytes(oldBytes: ByteArray, className: String): ByteArray
+
 }

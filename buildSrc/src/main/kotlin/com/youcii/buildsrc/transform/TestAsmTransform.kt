@@ -1,6 +1,6 @@
 package com.youcii.buildsrc.transform
 
-import com.youcii.buildsrc.base.BaseTransform
+import com.youcii.buildsrc.base.BaseAsmTransform
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.MethodVisitor
@@ -9,7 +9,8 @@ import org.objectweb.asm.Opcodes
 /**
  * Created by jingdongwei on 2021/03/02.
  */
-class TestTransform : BaseTransform() {
+class TestAsmTransform : BaseAsmTransform() {
+
     override fun getClassVisitor(classWriter: ClassWriter): ClassVisitor {
         return object : ClassVisitor(Opcodes.ASM5, classWriter) {
             private var className: String? = ""
@@ -29,7 +30,7 @@ class TestTransform : BaseTransform() {
                         override fun visitMethodInsn(opcode: Int, owner: String?, name: String?, desc: String?, itf: Boolean) {
                             super.visitMethodInsn(opcode, owner, name, desc, itf)
                             mv.visitVarInsn(Opcodes.ALOAD, 0)
-                            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "com/youcii/advanced/MainActivity", "showToast", "()V", false)
+                            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "com/youcii/advanced/MainActivity", "showASMToast", "()V", false)
                         }
                     }
                 }
