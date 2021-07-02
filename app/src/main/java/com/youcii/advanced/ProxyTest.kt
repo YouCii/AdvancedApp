@@ -7,7 +7,7 @@ package com.youcii.advanced
 open class ProxyTest {
 
     fun test() : String {
-        return RouteList.list
+        return "asdasdasdasdasdasddddddddddddddddddddddddddddddddddddddddd"
     }
 
 }

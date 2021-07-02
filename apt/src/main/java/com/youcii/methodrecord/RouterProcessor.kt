@@ -25,6 +25,16 @@ class RouterProcessor : AbstractProcessor() {
 
     private var generateContent = ""
 
+    override fun getSupportedSourceVersion(): SourceVersion {
+        return SourceVersion.latestSupported()
+    }
+
+    override fun getSupportedAnnotationTypes(): MutableSet<String> {
+        return LinkedHashSet<String>().apply {
+            add(Router::class.java.canonicalName)
+        }
+    }
+
     override fun process(typeElementSet: MutableSet<out TypeElement>, roundEnvironment: RoundEnvironment?): Boolean {
         roundEnvironment ?: return false
 
@@ -87,16 +97,6 @@ class RouterProcessor : AbstractProcessor() {
             writer.close()
         } catch (ignore: IOException) {
             println("generateFileWithJavaPoet写入失败:$ignore")
-        }
-    }
-
-    override fun getSupportedSourceVersion(): SourceVersion {
-        return SourceVersion.latestSupported()
-    }
-
-    override fun getSupportedAnnotationTypes(): MutableSet<String> {
-        return LinkedHashSet<String>().apply {
-            add(Router::class.java.canonicalName)
         }
     }
 

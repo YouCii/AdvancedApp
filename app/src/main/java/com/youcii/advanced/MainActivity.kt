@@ -13,6 +13,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         textview.text = MyApplication.aptContent
+        textview.setOnClickListener {
+            val routerClass1 = RouterClass1()
+            val routerClass2 = RouterClass2()
+        }
 
         val asd: String? = null
         textview.text = asd!!.trim()
