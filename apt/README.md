@@ -1,1 +1,3 @@
 用于测试 APT
+
+对于AST+APT只能使用annotationProcessor, 不使用AST的话可以同kapt

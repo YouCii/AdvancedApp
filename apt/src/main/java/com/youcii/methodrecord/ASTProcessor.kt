@@ -59,18 +59,12 @@ class ASTProcessor : AbstractProcessor() {
         for (typeElement in typeElementSet) {
             val elements = roundEnvironment.getElementsAnnotatedWith(typeElement) ?: continue
             for (element in elements) {
-                handleElement(element)
+                // 使用AST处理单个Element
+                val jcTree = trees.getTree(element) as JCTree? ?: continue
+                jcTree.accept(myVisitor)
             }
         }
         return false
-    }
-
-    /**
-     * 使用AST处理单个Element
-     */
-    private fun handleElement(element: Element) {
-        val jcTree = trees.getTree(element) as JCTree? ?: return
-        jcTree.accept(myVisitor)
     }
 
     private val myVisitor = object : TreeTranslator() {
