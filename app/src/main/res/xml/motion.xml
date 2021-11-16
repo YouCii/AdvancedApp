@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@+id/start"
+        motion:duration="1000"
+        motion:motionInterpolator="easeIn">
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/background"
+            android:background="@drawable/background"
+            android:layout_height="@dimen/height_begin"
+            android:layout_width="match_parent"
+            motion:layout_constraintLeft_toLeftOf="parent"
+            motion:layout_constraintRight_toRightOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"/>
+        <Constraint
+            android:id="@+id/back_icon"
+            android:layout_height="@dimen/height_begin"
+            motion:layout_constraintRight_toRightOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"/>
+        <Constraint
+            android:id="@+id/group_divider"
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            android:layout_marginBottom="52dp"
+            motion:layout_constraintLeft_toLeftOf="parent"
+            motion:layout_constraintRight_toRightOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"/>
+
+        <!--    左半部分    -->
+        <Constraint
+            android:id="@+id/tvAlreadyNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="34dp"
+            android:layout_marginBottom="34dp"
+            android:layout_marginStart="68dp"
+            android:scaleX="1"
+            android:scaleY="1"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintLeft_toLeftOf="parent"/>
+        <Constraint
+            android:id="@+id/tvMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:layout_marginStart="6dp"
+            motion:layout_constraintBaseline_toBaselineOf="@id/tvAlreadyNum"
+            motion:layout_constraintLeft_toRightOf="@id/tvAlreadyNum"/>
+        <Constraint
+            android:id="@+id/tvTodayDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            motion:layout_constraintLeft_toLeftOf="@id/tvAlreadyNum"
+            motion:layout_constraintRight_toRightOf="@id/tvMinute"
+            motion:layout_constraintTop_toBottomOf="@id/tvAlreadyNum"/>
+
+        <!--    右半部分    -->
+        <Constraint
+            android:id="@+id/tvSpeakNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="34dp"
+            android:scaleX="1"
+            android:scaleY="1"
+            android:layout_marginStart="40dp"
+            motion:layout_constraintLeft_toLeftOf="@id/group_divider"
+            motion:layout_constraintBottom_toBottomOf="@id/tvAlreadyNum"/>
+        <Constraint
+            android:id="@+id/tvTimes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:layout_marginStart="6dp"
+            motion:layout_constraintBaseline_toBaselineOf="@id/tvSpeakNum"
+            motion:layout_constraintLeft_toRightOf="@id/tvSpeakNum"/>
+        <Constraint
+            android:id="@+id/tvTodaySpeak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            motion:layout_constraintLeft_toLeftOf="@id/tvSpeakNum"
+            motion:layout_constraintRight_toRightOf="@id/tvTimes"
+            motion:layout_constraintTop_toBottomOf="@id/tvSpeakNum"/>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/background"
+            android:background="@drawable/background"
+            android:layout_height="@dimen/height_end"
+            android:layout_width="match_parent"
+            motion:layout_constraintLeft_toLeftOf="parent"
+            motion:layout_constraintRight_toRightOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"/>
+        <Constraint
+            android:id="@+id/back_icon"
+            android:layout_height="@dimen/height_end"
+            motion:layout_constraintRight_toRightOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"/>
+        <Constraint
+            android:id="@+id/group_divider"
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            motion:layout_constraintLeft_toLeftOf="parent"
+            motion:layout_constraintRight_toRightOf="parent"
+            motion:layout_constraintBottom_toBottomOf="@id/background"
+            motion:layout_constraintTop_toTopOf="@id/background"/>
+
+        <!--    左半部分    -->
+        <Constraint
+            android:id="@+id/tvAlreadyNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="0.71"
+            android:scaleY="0.71"
+            android:layout_marginBottom="3dp"
+            motion:autoSizeTextType="uniform"
+            motion:layout_constraintBottom_toBottomOf="@id/background"
+            motion:layout_constraintTop_toTopOf="@id/background"
+            motion:layout_constraintLeft_toRightOf="@id/tvTodayDuration"/>
+        <Constraint
+            android:id="@+id/tvMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            motion:layout_constraintBottom_toBottomOf="@id/background"
+            motion:layout_constraintTop_toTopOf="@id/background"
+            motion:layout_constraintLeft_toRightOf="@id/tvAlreadyNum"/>
+        <Constraint
+            android:id="@+id/tvTodayDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:layout_marginStart="32dp"
+            motion:layout_constraintLeft_toLeftOf="parent"
+            motion:layout_constraintBottom_toBottomOf="@id/background"
+            motion:layout_constraintTop_toTopOf="@id/background"/>
+
+        <!--    右半部分    -->
+        <Constraint
+            android:id="@+id/tvSpeakNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="0.71"
+            android:scaleY="0.71"
+            android:layout_marginBottom="3dp"
+            motion:layout_constraintLeft_toRightOf="@id/tvTodaySpeak"
+            motion:layout_constraintBottom_toBottomOf="@id/background"
+            motion:layout_constraintTop_toTopOf="@id/background"/>
+        <Constraint
+            android:id="@+id/tvTimes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            motion:layout_constraintBottom_toBottomOf="@id/background"
+            motion:layout_constraintTop_toTopOf="@id/background"
+            motion:layout_constraintLeft_toRightOf="@id/tvSpeakNum"/>
+        <Constraint
+            android:id="@+id/tvTodaySpeak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:layout_marginStart="20dp"
+            motion:layout_constraintLeft_toLeftOf="@id/group_divider"
+            motion:layout_constraintBottom_toBottomOf="@id/background"
+            motion:layout_constraintTop_toTopOf="@id/background"/>
+    </ConstraintSet>
+
+</MotionScene>

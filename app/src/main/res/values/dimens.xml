@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 动画 -->
+    <dimen name="top_begin">16dp</dimen>
+    <dimen name="top_end">8dp</dimen>
+    <dimen name="height_begin">90dp</dimen>
+    <dimen name="height_end">52dp</dimen>
+
+</resources>
