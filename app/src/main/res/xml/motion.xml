@@ -8,6 +8,21 @@
         motion:constraintSetStart="@+id/start"
         motion:duration="1000"
         motion:motionInterpolator="easeIn">
+
+<!--        <KeyFrameSet>-->
+<!--            <KeyAttribute-->
+<!--                android:rotation="-45"-->
+<!--                android:scaleX="2"-->
+<!--                android:scaleY="2"-->
+<!--                motion:framePosition="50"-->
+<!--                motion:motionTarget="@id/button" />-->
+<!--            <KeyPosition-->
+<!--                motion:framePosition="50"-->
+<!--                motion:keyPositionType="pathRelative"-->
+<!--                motion:motionTarget="@id/button"-->
+<!--                motion:percentY="-0.3" />-->
+<!--        </KeyFrameSet>-->
+
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
@@ -28,7 +43,7 @@
             android:id="@+id/group_divider"
             android:layout_width="1dp"
             android:layout_height="16dp"
-            android:layout_marginBottom="52dp"
+            android:layout_marginBottom="37dp"
             motion:layout_constraintLeft_toLeftOf="parent"
             motion:layout_constraintRight_toRightOf="parent"
             motion:layout_constraintBottom_toBottomOf="parent"/>
@@ -40,19 +55,19 @@
             android:layout_height="wrap_content"
             android:textSize="34dp"
             android:layout_marginBottom="34dp"
-            android:layout_marginStart="68dp"
+            android:layout_marginEnd="6dp"
             android:scaleX="1"
             android:scaleY="1"
             motion:layout_constraintBottom_toBottomOf="parent"
-            motion:layout_constraintLeft_toLeftOf="parent"/>
+            motion:layout_constraintRight_toLeftOf="@id/tvMinute"/>
         <Constraint
             android:id="@+id/tvMinute"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15dp"
-            android:layout_marginStart="6dp"
+            android:layout_marginEnd="40dp"
             motion:layout_constraintBaseline_toBaselineOf="@id/tvAlreadyNum"
-            motion:layout_constraintLeft_toRightOf="@id/tvAlreadyNum"/>
+            motion:layout_constraintRight_toLeftOf="@id/group_divider"/>
         <Constraint
             android:id="@+id/tvTodayDuration"
             android:layout_width="wrap_content"
@@ -121,26 +136,25 @@
             android:layout_height="wrap_content"
             android:scaleX="0.71"
             android:scaleY="0.71"
-            android:layout_marginBottom="3dp"
             motion:autoSizeTextType="uniform"
             motion:layout_constraintBottom_toBottomOf="@id/background"
             motion:layout_constraintTop_toTopOf="@id/background"
-            motion:layout_constraintLeft_toRightOf="@id/tvTodayDuration"/>
+            motion:layout_constraintRight_toLeftOf="@id/tvMinute"/>
         <Constraint
             android:id="@+id/tvMinute"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
+            android:textSize="14dp"
+            android:layout_marginEnd="20dp"
             motion:layout_constraintBottom_toBottomOf="@id/background"
             motion:layout_constraintTop_toTopOf="@id/background"
-            motion:layout_constraintLeft_toRightOf="@id/tvAlreadyNum"/>
+            motion:layout_constraintRight_toLeftOf="@id/group_divider"/>
         <Constraint
             android:id="@+id/tvTodayDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14dp"
-            android:layout_marginStart="32dp"
-            motion:layout_constraintLeft_toLeftOf="parent"
+            motion:layout_constraintRight_toLeftOf="@id/tvAlreadyNum"
             motion:layout_constraintBottom_toBottomOf="@id/background"
             motion:layout_constraintTop_toTopOf="@id/background"/>
 
@@ -151,7 +165,7 @@
             android:layout_height="wrap_content"
             android:scaleX="0.71"
             android:scaleY="0.71"
-            android:layout_marginBottom="3dp"
+            android:layout_marginStart="2dp"
             motion:layout_constraintLeft_toRightOf="@id/tvTodaySpeak"
             motion:layout_constraintBottom_toBottomOf="@id/background"
             motion:layout_constraintTop_toTopOf="@id/background"/>
@@ -159,7 +173,8 @@
             android:id="@+id/tvTimes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
+            android:textSize="14dp"
+            android:layout_marginStart="2dp"
             motion:layout_constraintBottom_toBottomOf="@id/background"
             motion:layout_constraintTop_toTopOf="@id/background"
             motion:layout_constraintLeft_toRightOf="@id/tvSpeakNum"/>

@@ -1,6 +1,8 @@
 package com.youcii.advanced
 
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -32,3 +34,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+val Number.dp: Int
+    get() = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), Resources.getSystem().displayMetrics).toInt()
