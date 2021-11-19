@@ -8,21 +8,6 @@
         motion:constraintSetStart="@+id/start"
         motion:duration="1000"
         motion:motionInterpolator="linear">
-
-<!--        <KeyFrameSet>-->
-<!--            <KeyAttribute-->
-<!--                android:rotation="-45"-->
-<!--                android:scaleX="2"-->
-<!--                android:scaleY="2"-->
-<!--                motion:framePosition="50"-->
-<!--                motion:motionTarget="@id/button" />-->
-<!--            <KeyPosition-->
-<!--                motion:framePosition="50"-->
-<!--                motion:keyPositionType="pathRelative"-->
-<!--                motion:motionTarget="@id/button"-->
-<!--                motion:percentY="-0.3" />-->
-<!--        </KeyFrameSet>-->
-
     </Transition>
 
     <ConstraintSet android:id="@+id/start">

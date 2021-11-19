@@ -14,11 +14,15 @@ class MyMotion @JvmOverloads constructor(
 ) : MotionLayout(context, attrs, defStyleAttr), AppBarLayout.OnOffsetChangedListener {
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-        if (verticalOffset >= -8.dp) {
+        val total = appBarLayout?.totalScrollRange?.toFloat()!!
 
-        } else {
-            progress = -verticalOffset / appBarLayout?.totalScrollRange?.toFloat()!!
-        }
+        // if (verticalOffset >= -8.dp) {
+        // } else {
+        //     progress = (-verticalOffset - 8.dp) / total
+        //     Log.e("MyMotion", "progress: " + progress)
+        // }
+
+        progress = -verticalOffset / total
     }
 
     override fun onAttachedToWindow() {
