@@ -8,7 +8,8 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/height_end">
+        android:layout_marginTop="16dp"
+        android:minHeight="44dp">
 
         <include layout="@layout/motion_layout" />
 

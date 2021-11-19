@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.youcii.advanced.MyMotion
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.youcii.advanced.MyMotion xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,33 +13,32 @@
 
     <View
         android:id="@+id/background"
-        android:background="@drawable/background"
-        android:layout_height="@dimen/height_begin"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/height_begin"
+        android:background="@drawable/background"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
     <!--  TODO-JDW 注意圆角  -->
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/back_icon"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/height_begin"
-        android:src="@drawable/asd"
         android:scaleType="fitEnd"
-        android:layout_marginEnd="6dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:src="@drawable/asd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <View
         android:id="@+id/group_divider"
         android:layout_width="1dp"
         android:layout_height="16dp"
-        android:background="#FFF"
         android:layout_marginBottom="37dp"
+        android:background="#FFF"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
     <!--  TODO-JDW 字体  -->
     <!--  左半部分  -->
@@ -48,70 +46,68 @@
         android:id="@+id/tvAlreadyNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="34dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="34dp"
         android:text="0"
         android:textColor="#FFF"
-        android:layout_marginBottom="34dp"
-        android:layout_marginEnd="6dp"
+        android:textSize="34dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/tvMinute"
-        tools:text="15"/>
+        tools:text="15" />
 
     <TextView
         android:id="@+id/tvMinute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15dp"
-        android:textColor="#FFF"
         android:text="分钟"
-        android:layout_marginEnd="40dp"
+        android:textColor="#FFF"
+        android:textSize="15dp"
         app:layout_constraintBaseline_toBaselineOf="@id/tvAlreadyNum"
-        app:layout_constraintRight_toLeftOf="@id/group_divider"/>
+        app:layout_constraintRight_toLeftOf="@id/group_divider" />
 
     <TextView
         android:id="@+id/tvTodayDuration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="今日已学"
-        android:textSize="14dp"
         android:textColor="#FFF"
+        android:textSize="14dp"
         app:layout_constraintLeft_toLeftOf="@id/tvAlreadyNum"
         app:layout_constraintRight_toRightOf="@id/tvMinute"
-        app:layout_constraintTop_toBottomOf="@id/tvAlreadyNum"/>
+        app:layout_constraintTop_toBottomOf="@id/tvAlreadyNum" />
 
     <!--  右半部分  -->
     <TextView
         android:id="@+id/tvSpeakNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="34dp"
-        android:textColor="#FFF"
-        android:layout_marginStart="40dp"
-        app:layout_constraintLeft_toLeftOf="@id/group_divider"
-        app:layout_constraintBottom_toBottomOf="@id/tvAlreadyNum"
         android:text="0"
-        tools:text="34"/>
+        android:textColor="#FFF"
+        android:textSize="34dp"
+        app:layout_constraintBottom_toBottomOf="@id/tvAlreadyNum"
+        app:layout_constraintLeft_toLeftOf="@id/group_divider"
+        tools:text="34" />
 
     <TextView
         android:id="@+id/tvTimes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15dp"
-        android:textColor="#FFF"
-        android:text="次"
         android:layout_marginStart="6dp"
+        android:text="次"
+        android:textColor="#FFF"
+        android:textSize="15dp"
         app:layout_constraintBaseline_toBaselineOf="@id/tvSpeakNum"
-        app:layout_constraintLeft_toRightOf="@id/tvSpeakNum"/>
+        app:layout_constraintLeft_toRightOf="@id/tvSpeakNum" />
 
     <TextView
         android:id="@+id/tvTodaySpeak"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="今日开口"
-        android:textSize="14dp"
         android:textColor="#FFF"
+        android:textSize="14dp"
         app:layout_constraintLeft_toLeftOf="@id/tvSpeakNum"
         app:layout_constraintRight_toRightOf="@id/tvTimes"
-        app:layout_constraintTop_toBottomOf="@id/tvSpeakNum"/>
+        app:layout_constraintTop_toBottomOf="@id/tvSpeakNum" />
 
 </com.youcii.advanced.MyMotion>
