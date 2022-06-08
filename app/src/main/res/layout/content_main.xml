@@ -6,9 +6,19 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvContent"
+        android:id="@+id/tvState"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:gravity="center"
-        android:text="Hello World" />
+        app:layout_constraintBottom_toTopOf="@id/tvSet"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSet"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvState" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

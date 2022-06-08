@@ -1,40 +1,43 @@
 package com.youcii.advanced
 
+import android.os.Build
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import com.youcii.advanced.databinding.ActivityMainBinding
+
+import android.content.Intent
+import android.provider.Settings
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var activityMainBinding: ActivityMainBinding
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
-        setSupportActionBar(activityMainBinding.toolbar)
 
-        activityMainBinding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
-        }
-
-        activityMainBinding.content.tvContent.text = "哈哈哈"
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+        activityMainBinding.content.tvSet.setOnClickListener {
+            if (Utils.isZenMode(this)) {
+                Utils.setZenMode(this, false)
+            } else {
+                Utils.setZenMode(this, true)
+            }
+            activityMainBinding.content.tvSet.text = "isZenMode: ${Utils.isZenMode(this)}"
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!Utils.isZenModeGranted(this)) {
+            val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+            startActivityForResult(intent, 0)
+        }
+
+        activityMainBinding.content.tvState.text = "isZenModeGranted: ${Utils.isZenModeGranted(this)}"
+        activityMainBinding.content.tvSet.text = "isZenMode: ${Utils.isZenMode(this)}"
+    }
 }
