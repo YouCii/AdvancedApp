@@ -11,4 +11,14 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="Hello World" />
+
+    <View
+        android:id="@+id/viewBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/live_audio_open"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
